@@ -48,6 +48,29 @@ angular.module('angularLoad', [])
 		});
 
 		/**
+		 * Dynamically unloads the given JS file
+		 * @param href The url of the JS to unload dynamically
+		 * @returns boolean that will be true once the JS file has been unloaded successfully or otherwise false.
+     * VERY IMPORTANT: If the JS successfully loaded, then unloading does NOT
+     * remove the executed code, so global variables/functions etc will still
+     * exist.  The intended purpose of this function is to allow another
+     * attempt at loading JS on failure to load on a previous attempt.
+		 */
+		this.unloadScript = function (src) {
+			delete promises[src];
+			var docBody = document.body;
+			if(docBody) {
+				var targetJS = docBody.querySelector('[src="' + src + '"]');
+				if(targetJS) {
+					targetJS.remove();
+					return true;
+				}
+			}
+			return false;
+		};
+
+
+		/**
 		 * Dynamically loads the given CSS file
 		 * @param href The url of the CSS to load dynamically
 		 * @returns {*} Promise that will be resolved once the CSS file has been loaded.
